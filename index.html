@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 복지상담 시뮬레이터</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="loadingOverlay">
+    <img id="loadingImage" src="data:image/webp;base64,UklGRl4AAABXRUJQVlA4IBQAAADQAQCdASpIAAAkAAUAmJaQAA3AA/v89WkEAAFVeKjIBACH5BAAAAAAALAAAAAAeAB4AAAeagH+Cg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp+goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubrCwAAAAAAOw==" alt="AI 로딩 중..."/>
+  </div>
+
+  <div class="app-container">
+    <header>AI 기반 복지상담 시뮬레이터</header>
+    <div class="lang-select">
+      <label for="langSelect">Language:</label>
+      <select id="langSelect" onchange="switchLanguage(this.value)">
+        <option value="ko">한국어</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+    <main>
+      <div id="step1" class="step active">
+        <h1>상담 대상자 정보</h1>
+        <p style="color:#666">가상의 사례를 통해 복지 연계 시뮬레이션을 진행합니다</p>
+        <div class="card">
+          <strong>상담대상자 정보:</strong><br>
+          이름: 홍길동<br>
+          생년월일: 1965.01.01<br>
+          주소: 서울시 성북구 정릉로 100<br>
+          건강보험료: 없음 (체납)<br>
+          가구형태: 1인 가구<br>
+          위기사유: 실직 및 건강악화<br>
+          상담자: 김상담 (성북구청 복지팀)
+        </div>
+        <button onclick="showStep('step2')">상담 시작하기</button>
+      </div>
+
+      <div id="step2" class="step">
+        <h1>STEP 2: 전자 설문 입력</h1>
+        <form id="surveyForm">
+          <div class="question">
+            <label>1. 현재 고정적인 소득이 있으신가요?</label>
+            <div class="options">
+              <input type="radio" name="income" value="없음" required /> 없음
+              <input type="radio" name="income" value="일용직" /> 일용직
+              <input type="radio" name="income" value="정기수입" /> 정기적 수입
+            </div>
+          </div>
+          <div class="question">
+            <label>2. 가장 시급하게 지원이 필요한 영역은 무엇인가요?</label>
+            <div class="options">
+              <input type="radio" name="urgent" value="생계" required /> 생계
+              <input type="radio" name="urgent" value="의료" /> 의료
+              <input type="radio" name="urgent" value="주거" /> 주거
+              <input type="radio" name="urgent" value="돌봄" /> 돌봄
+              <input type="radio" name="urgent" value="기타" /> 기타
+            </div>
+          </div>
+          <div class="question">
+            <label>3. 현재 생활에 어려움을 느끼는 주요 사유는 무엇인가요?</label>
+            <textarea name="reason"></textarea>
+          </div>
+          <div class="question">
+            <label>4. 최근 3개월 내 위기상황이 있었나요?</label>
+            <div class="options">
+              <input type="radio" name="crisis" value="실직" required /> 실직
+              <input type="radio" name="crisis" value="가족사망" /> 가족 사망
+              <input type="radio" name="crisis" value="질병" /> 질병
+              <input type="radio" name="crisis" value="없음" /> 없음
+            </div>
+          </div>
+          <div class="question">
+            <label>5. 현재 주거 형태는 어떻게 되시나요?</label>
+            <div class="options">
+              <input type="radio" name="housing" value="자가" required /> 자가
+              <input type="radio" name="housing" value="전세" /> 전세
+              <input type="radio" name="housing" value="월세" /> 월세
+              <input type="radio" name="housing" value="무상" /> 무상거주
+              <input type="radio" name="housing" value="노숙" /> 노숙 또는 거주불안
+            </div>
+          </div>
+          <div class="question">
+            <label>6. 혼자 거주 중이신가요?</label>
+            <div class="options">
+              <input type="radio" name="alone" value="예" required /> 예
+              <input type="radio" name="alone" value="아니오" /> 아니오
+            </div>
+          </div>
+          <div class="question">
+            <label>7. 건강보험료는 정상 납부 중이신가요?</label>
+            <div class="options">
+              <input type="radio" name="insurance" value="정상납부" required /> 정상납부
+              <input type="radio" name="insurance" value="체납" /> 체납
+              <input type="radio" name="insurance" value="미가입" /> 미가입
+            </div>
+          </div>
+          <div class="question">
+            <label>8. 최근 병원 진료를 받은 적이 있으신가요?</label>
+            <div class="options">
+              <input type="radio" name="hospital" value="있음" required /> 있음
+              <input type="radio" name="hospital" value="없음" /> 없음
+            </div>
+          </div>
+          <div class="question">
+            <label>9. 일상생활에 도움이 필요한 부분이 있으신가요?</label>
+            <div class="options">
+              <input type="radio" name="support" value="예" required /> 예
+              <input type="radio" name="support" value="아니오" /> 아니오
+            </div>
+          </div>
+          <div class="question">
+            <label>10. 특별히 전달하고 싶은 상황이나 요청사항이 있으신가요?</label>
+            <textarea name="comment"></textarea>
+          </div>
+          <button type="button" id="nextBtn" disabled>AI 추천 보기</button>
+          <button type="button" onclick="goBack()">← 뒤로가기</button>
+        </form>
+      </div>
+
+      <div id="step3" class="step">
+        <h1>STEP 3: AI 추천 복지서비스</h1>
+        <p>※ 아래 내용은 전자설문 응답 기반으로 분석된 결과입니다.</p>
+        <div id="recommendationArea"></div>
+        <label>상담사 비고</label>
+        <textarea placeholder="상담자가 참고할 내용 또는 특이사항"></textarea>
+        <button onclick="showStep('step4')">연계조치 진행</button>
+        <button type="button" onclick="goBack()">← 뒤로가기</button>
+      </div>
+
+      <div id="step4" class="step">
+        <h2>STEP 4: 상담사 연계조치</h2>
+
+<p><strong>선택된 서비스 요약:</strong></p>
+<ul>
+  <li>긴급복지지원 - 성북구 ○○동 주민센터</li>
+  <li>방문건강관리 - 성북구보건소</li>
+  <li>식료품 지원 - 성북구 사회복지관</li>
+</ul>
+
+<div style="margin-bottom: 1rem;">
+  <label for="agency">연계기관 선택</label>
+  <select id="agency">
+    <option>성북구 ○○동 주민센터</option>
+    <option>성북구보건소</option>
+    <option>성북구 사회복지관</option>
+    <option>기타 연계기관</option>
+  </select>
+</div>
+
+<div style="margin-bottom: 1.5rem;">
+  <label for="counselComment">상담자 의견</label>
+  <textarea id="counselComment" placeholder="상담자가 기록할 참고사항" style="width: 100%; height: 120px;"></textarea>
+</div>
+        
+        <button onclick="generatePDF()">제출 및 저장</button>
+        <button type="button" onclick="goBack()">← 뒤로가기</button>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
