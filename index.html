@@ -12,7 +12,7 @@
   </div>
 
   <div class="app-container">
-    <header>AI 기반 복지상담 시뮬레이터</header>
+    <header>AI 기반 복지상담 시무리언터</header>
     <div class="lang-select">
       <label for="langSelect">Language:</label>
       <select id="langSelect" onchange="switchLanguage(this.value)">
@@ -23,16 +23,16 @@
     <main>
       <div id="step1" class="step active">
         <h1>상담 대상자 정보</h1>
-        <p style="color:#666">가상의 사례를 통해 복지 연계 시뮬레이션을 진행합니다</p>
+        <p style="color:#666">가상의 사례를 통해 복지 연계 시무리언션을 진행합니다</p>
         <div class="card">
           <strong>상담대상자 정보:</strong><br>
           이름: 홍길동<br>
           생년월일: 1965.01.01<br>
-          주소: 서울시 성북구 정릉로 100<br>
-          건강보험료: 없음 (체납)<br>
+          주소: 서울시 성북구 정롱로 100<br>
+          건강보통료: 없음 (체납)<br>
           가구형태: 1인 가구<br>
-          위기사유: 실직 및 건강악화<br>
-          상담자: 김상담 (성북구청 복지팀)
+          위기사유: 실집 및 건강악화<br>
+          상담자: 김상담 (성북구천 복지팀)
         </div>
         <button onclick="showStep('step2')">상담 시작하기</button>
       </div>
@@ -129,33 +129,35 @@
         <button type="button" onclick="goBack()">← 뒤로가기</button>
       </div>
 
-      <div id="step4" class="step">
+       <div id="step4" class="step">
         <h2>STEP 4: 상담사 연계조치</h2>
+        <p><strong>선택된 서비스 요약:</strong></p>
+        <ul>
+          <li>금기복지지원 - 성북구 ○○동 주민센터</li>
+          <li>방문건강관리 - 성북구보건소</li>
+          <li>식료품 지원 - 성북구 사회복지관</li>
+        </ul>
 
-<p><strong>선택된 서비스 요약:</strong></p>
-<ul>
-  <li>긴급복지지원 - 성북구 ○○동 주민센터</li>
-  <li>방문건강관리 - 성북구보건소</li>
-  <li>식료품 지원 - 성북구 사회복지관</li>
-</ul>
+        <div style="margin-bottom: 1rem;">
+          <label for="agency">연계기관 선택</label>
+          <select id="agency">
+            <option>성북구 ○○동 주민센터</option>
+            <option>성북구보건소</option>
+            <option>성북구 사회복지관</option>
+            <option>기타 연계기관</option>
+          </select>
+        </div>
 
-<div style="margin-bottom: 1rem;">
-  <label for="agency">연계기관 선택</label>
-  <select id="agency">
-    <option>성북구 ○○동 주민센터</option>
-    <option>성북구보건소</option>
-    <option>성북구 사회복지관</option>
-    <option>기타 연계기관</option>
-  </select>
-</div>
+        <div style="margin-bottom: 1.5rem;">
+          <label for="counselComment">상담자 의견</label>
+          <textarea id="counselComment" placeholder="상담자가 기록할 참고사항" style="width: 100%; height: 120px;"></textarea>
+        </div>
 
-<div style="margin-bottom: 1.5rem;">
-  <label for="counselComment">상담자 의견</label>
-  <textarea id="counselComment" placeholder="상담자가 기록할 참고사항" style="width: 100%; height: 120px;"></textarea>
-</div>
-        
-        <button onclick="generatePDF()">제출 및 저장</button>
-        <button type="button" onclick="goBack()">← 뒤로가기</button>
+        <div class="popup-buttons" style="text-align:center; display: flex; justify-content: center; gap: 10px;">
+          <button type="button" onclick="submitAndClosePopup()">제출 및 저장</button>
+          <button type="button" onclick="window.close()">← 뒤로가기</button>
+          <button type="button" onclick="submitPopupForm()">전송</button>
+        </div>
       </div>
     </main>
   </div>
