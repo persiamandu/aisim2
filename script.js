@@ -164,3 +164,4 @@ function generatePDF() {
 
   popup.document.close();
 }
+}); // DOMContentLoaded 끝
