@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+// ✅ 전역에서 직접 호출되는 함수는 DOMContentLoaded 바깥에서 선언해야 함
 function switchLanguage(lang) {
   document.documentElement.setAttribute('data-lang', lang);
 }
@@ -18,77 +18,6 @@ function goBack() {
     const currentStep = document.querySelector('.step.active');
     if (currentStep) currentStep.classList.remove('active');
     document.getElementById(previousStep).classList.add('active');
-  }
-}
-
-const stepHistory = [];
-const form = document.getElementById('surveyForm');
-const nextBtn = document.getElementById('nextBtn');
-
-form.querySelectorAll('input, textarea').forEach(el => {
-  el.addEventListener('input', checkFormStatus);
-  el.addEventListener('change', checkFormStatus);
-});
-
-function checkFormStatus() {
-  const formData = new FormData(form);
-  const requiredFields = [
-    formData.get('income'),
-    formData.get('crisis'),
-    formData.get('housing'),
-    formData.get('alone'),
-    formData.get('insurance'),
-    formData.get('hospital'),
-    formData.get('support'),
-    formData.get('urgent')
-  ];
-  const isComplete = requiredFields.every(val => val && val.length > 0);
-  nextBtn.disabled = !isComplete;
-}
-
-nextBtn.onclick = function () {
-  if (!nextBtn.disabled) {
-    document.getElementById('loadingOverlay').style.display = 'flex';
-    setTimeout(() => {
-      document.getElementById('loadingOverlay').style.display = 'none';
-      showStep('step3');
-      renderRecommendation();
-    }, 1200);
-  }
-};
-
-function renderRecommendation() {
-  const formData = new FormData(form);
-  const urgent = formData.get('urgent');
-  const support = formData.get('support');
-  const income = formData.get('income');
-  const recommendationArea = document.getElementById('recommendationArea');
-  recommendationArea.innerHTML = '';
-
-  const services = [];
-  if (urgent === '생계') {
-    services.push(`<div class="card">
-      <strong>긴급복지지원 (생계비)</strong>
-      <ul><li>지원: 월 473,000원</li><li>기관: ○○동 주민센터</li></ul>
-    </div>`);
-  }
-  if (support === '예') {
-    services.push(`<div class="card">
-      <strong>방문건강관리서비스</strong>
-      <ul><li>지원: 간호사 방문, 복약지도</li><li>기관: ○○보건소</li></ul>
-    </div>`);
-  }
-  if (income === '없음') {
-    services.push(`<div class="card">
-      <strong>식료품 지원 (푸드뱅크)</strong>
-      <ul><li>지원: 식료품 월 1회</li><li>기관: ○○사회복지관</li></ul>
-    </div>`);
-  }
-
-  if (services.length === 0) {
-    recommendationArea.innerHTML = '<div class="card" style="background:#fff3cd;">해당 조건에 맞는 복지서비스가 현재 없습니다.</div>';
-  } else {
-    recommendationArea.innerHTML = services.join('');
   }
 }
 
@@ -164,4 +93,80 @@ function generatePDF() {
 
   popup.document.close();
 }
-}); // DOMContentLoaded 끝
+
+// ✅ 전역에서 관리되는 상태
+const stepHistory = [];
+
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById('surveyForm');
+  const nextBtn = document.getElementById('nextBtn');
+
+  if (!form || !nextBtn) return;
+
+  form.querySelectorAll('input, textarea').forEach(el => {
+    el.addEventListener('input', checkFormStatus);
+    el.addEventListener('change', checkFormStatus);
+  });
+
+  function checkFormStatus() {
+    const formData = new FormData(form);
+    const requiredFields = [
+      formData.get('income'),
+      formData.get('crisis'),
+      formData.get('housing'),
+      formData.get('alone'),
+      formData.get('insurance'),
+      formData.get('hospital'),
+      formData.get('support'),
+      formData.get('urgent')
+    ];
+    const isComplete = requiredFields.every(val => val && val.length > 0);
+    nextBtn.disabled = !isComplete;
+  }
+
+  nextBtn.onclick = function () {
+    if (!nextBtn.disabled) {
+      document.getElementById('loadingOverlay').style.display = 'flex';
+      setTimeout(() => {
+        document.getElementById('loadingOverlay').style.display = 'none';
+        showStep('step3');
+        renderRecommendation();
+      }, 1200);
+    }
+  };
+
+  function renderRecommendation() {
+    const formData = new FormData(form);
+    const urgent = formData.get('urgent');
+    const support = formData.get('support');
+    const income = formData.get('income');
+    const recommendationArea = document.getElementById('recommendationArea');
+    recommendationArea.innerHTML = '';
+
+    const services = [];
+    if (urgent === '생계') {
+      services.push(`<div class="card">
+        <strong>긴급복지지원 (생계비)</strong>
+        <ul><li>지원: 월 473,000원</li><li>기관: ○○동 주민센터</li></ul>
+      </div>`);
+    }
+    if (support === '예') {
+      services.push(`<div class="card">
+        <strong>방문건강관리서비스</strong>
+        <ul><li>지원: 간호사 방문, 복약지도</li><li>기관: ○○보건소</li></ul>
+      </div>`);
+    }
+    if (income === '없음') {
+      services.push(`<div class="card">
+        <strong>식료품 지원 (푸드뱅크)</strong>
+        <ul><li>지원: 식료품 월 1회</li><li>기관: ○○사회복지관</li></ul>
+      </div>`);
+    }
+
+    if (services.length === 0) {
+      recommendationArea.innerHTML = '<div class="card" style="background:#fff3cd;">해당 조건에 맞는 복지서비스가 현재 없습니다.</div>';
+    } else {
+      recommendationArea.innerHTML = services.join('');
+    }
+  }
+});
