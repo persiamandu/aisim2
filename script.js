@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded", function () {
 function switchLanguage(lang) {
   document.documentElement.setAttribute('data-lang', lang);
 }
